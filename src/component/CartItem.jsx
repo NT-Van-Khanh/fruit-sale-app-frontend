@@ -1,9 +1,10 @@
 import React from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
-const CartItem = ({ product, onIncrease, onDecrease, onRemove }) => {
+const CartItem = ({ product,onSelect, isSelected, onIncrease, onDecrease, onRemove }) => {
     return (
         <div className="flex items-center justify-between gap-4 border-b border-gray-400 py-3 pl-5 pr-10 ">
-            <input type="checkbox" className="w-5 h-5"/>
+            <input type="checkbox" className="w-5 h-5"
+                    checked={isSelected} onChange={onSelect} />
             <img className="w-32 h-32 rounded-md object-contain" 
             src={product.image} alt={product.name} />
             <div className="flex flex-col w-80">

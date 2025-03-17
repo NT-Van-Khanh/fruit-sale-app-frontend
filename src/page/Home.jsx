@@ -37,12 +37,12 @@ const HomePage = () =>{
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
         // Kiểm tra nếu sản phẩm đã có trong giỏ hàng, thì tăng số lượng
-        const existingProductIndex = cart.findIndex((item) => item.id === product.id);
+        const existingProductIndex = cart.findIndex((item) => item.productId === product.id);
 
         if (existingProductIndex !== -1) {
             cart[existingProductIndex].quantity += 1;
         } else {
-            cart.push({ ...product, quantity: 1 });
+            cart.push({ productId: product.id, quantity: 1 });
         }
 
         // Lưu lại giỏ hàng mới vào LocalStorage
@@ -54,7 +54,7 @@ const HomePage = () =>{
     return (
         <>
             <Header />
-            <main className="home-container">  
+            <main className="home-container ">  
                 <div className="categories-wrapper">
                     <Categories />
                 </div>
