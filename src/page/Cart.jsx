@@ -3,7 +3,7 @@ import Header  from "../component/Header";
 import Footer from "../component/Footer";
 import CartList from "../component/CartList";
 import CartSummary from "../component/CartSummary";
-
+import Swal from "sweetalert2";
 const CartPage = () => {
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
@@ -91,14 +91,14 @@ const CartPage = () => {
     // Giảm số lượng
     const decreaseQuantity = (id) => {
         setCart((prevCart) => {
-            const updatedCart = prevCart
-                .map((item) =>
-                    item.productId === id && item.quantity > 1
-                        ? { ...item, quantity: item.quantity - 1 }
-                        : item
-                )
-                .filter((item) => item.quantity > 0); // Loại bỏ sản phẩm có quantity = 0
+            let updatedCart = prevCart.map((item) =>
+                item.productId === id
+                    ? { ...item, quantity: item.quantity - 1 } // Giảm số lượng
+                    : item
+            );
+            updatedCart = updatedCart.filter((item) => item.quantity > 0);
     
+            // Cập nhật LocalStorage
             localStorage.setItem("cart", JSON.stringify(updatedCart));
             return updatedCart;
         });
@@ -106,10 +106,33 @@ const CartPage = () => {
 
     // Xóa sản phẩm
     const removeItem = (id) => {
-        setCart((prevCart) => {
-            const updatedCart = prevCart.filter((item) => item.productId !== id);
-            localStorage.setItem("cart", JSON.stringify(updatedCart));
-            return updatedCart;
+        Swal.fire({
+            title: "Bạn có chắc chắn?",
+            text: "Sản phẩm sẽ bị xóa khỏi giỏ hàng!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Xóa",
+            cancelButtonText: "Hủy",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setCart((prevCart) => {
+                    const updatedCart = prevCart.filter((item) => item.productId !== id);
+                    localStorage.setItem("cart", JSON.stringify(updatedCart));
+                    return updatedCart;
+                });
+                Swal.fire({
+                    title: "Đã xóa!",
+                    text: "Sản phẩm đã bị xóa khỏi giỏ hàng.",
+                    icon: "success",
+                    toast: true,
+                    position: "bottom-end",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                });
+            }    
         });
     };
 
@@ -141,7 +164,7 @@ const CartPage = () => {
         }
     };
     
-    const isAllSelected = selectedItems.size === cart.length && cart.length > 0;
+    // const isAllSelected = selectedItems.size === cart.length && cart.length > 0;
 
 
     // Thanh toán
@@ -179,10 +202,3 @@ const CartPage = () => {
 
 export default CartPage;
 
-    // const productData = await Promise.all(
-    //     cart.map(async ({ productId, quantity }) => {
-    //         const response = await fetch(`http://localhost:8088/api/product/simple/${productId}`);
-    //         const product = await response.json();
-    //         return { ...product, quantity };
-    //     })
-    // );

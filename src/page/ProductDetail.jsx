@@ -3,6 +3,9 @@ import { useParams } from "react-router-dom";
 import Header  from "../component/Header";
 import Footer from "../component/Footer";
 import ProductDetail from "../component/ProductDetail";
+import Swal from "sweetalert2";
+
+import { fetchCheckStock} from "../service/api";
 const ProductDetailPage = () => {
     const { productId } = useParams(); // ✅ Lấy productId từ URL
     const [cart, setCart] = useState(() => {
@@ -12,9 +15,9 @@ const ProductDetailPage = () => {
     const handleAddToCart = async (product, quantity) => {
         try {
             // Gọi API kiểm tra số lượng tồn kho
-            const response = await fetch(`http://localhost:8088/api/product/check-stock/${product.id}`);
-            const { maxQuantity } = await response.json(); // maxQuantity từ API
-    
+            // const response = await fetch(`http://localhost:8088/api/product/check-stock/${product.id}`);
+            // const { maxQuantity } = await response.json(); // maxQuantity từ API
+            const { maxQuantity } = await fetchCheckStock(product.id);
             setCart((prevCart) => {
                 const existingItem = prevCart.find((item) => item.productId === product.id);
                 let updatedCart;
@@ -42,6 +45,17 @@ const ProductDetailPage = () => {
                 }
     
                 localStorage.setItem("cart", JSON.stringify(updatedCart)); // Lưu vào localStorage
+                
+                Swal.fire({
+                    title: "Thành công!",
+                    text: "Sản phẩm đã được thêm vào giỏ hàng.",
+                    icon: "success",
+                    toast: true,
+                    position: "bottom-end",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                });
                 return updatedCart;
             });
         } catch (error) {

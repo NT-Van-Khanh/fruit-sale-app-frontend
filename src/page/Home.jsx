@@ -5,7 +5,7 @@ import Banner from "../component/Banner";
 import Categories  from "../component/Categories";
 import FeaturedProducts  from "../component/FeaturedProducts";
 import ProductGrid  from "../component/ProductGrid";
-
+import Swal from "sweetalert2";
 import { fetchProducts, fetchFeaturedProducts } from "../service/api"; // API call
 const HomePage = () =>{
     const [products, setProducts] = useState([]);
@@ -47,7 +47,16 @@ const HomePage = () =>{
 
         // Lưu lại giỏ hàng mới vào LocalStorage
         localStorage.setItem("cart", JSON.stringify(cart));
-
+        Swal.fire({
+            title: "Thành công!",
+            text: "Sản phẩm đã được thêm vào giỏ hàng.",
+            icon: "success",
+            toast: true,
+            position: "bottom-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+        });
         console.log("Đã thêm vào giỏ:", product);
     };
 

@@ -53,7 +53,8 @@ const ProductDetail = ({ productId, onAddToCart })=>{
                         >+</button>
                     </div>
                     <button
-                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
+                        className="mt-4 px-4 py-2 bg-green-500 hover:bg-green-400
+                                    text-white rounded"
                         onClick={() => onAddToCart(product, quantity)}>
                         Thêm vào giỏ hàng
                     </button>
