@@ -11,9 +11,51 @@ Currently, two official plugins are available:
 
 If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
 
+---
+
+# Fruit Retail - Home Page
+
+This project provides a basic setup for a fruit retail website using **React**, **Vite**, and **Tailwind CSS**. It includes pages for product details, cart, and home page, integrated with an API for dynamic data fetching.
+
 ## Features
-- Initialized React project with Vite and Tailwind CSS
-- Set up React Router for navigation
-- Integrated Heroicons for icons
-- Added SweetAlert2 for alerts
-- API integration for product pages and dynamic content
+- Initialized **React** project with **Vite** and **Tailwind CSS** for responsive and modern design.
+- Set up **React Router** for smooth page navigation.
+- Integrated **Heroicons** for scalable icons across the application.
+- Added **SweetAlert2** for elegant and customizable alerts.
+- API integration to dynamically fetch and display product data.
+- Basic structure for product details and shopping cart pages.
+
+## Installation
+
+To get started with this project, follow the steps below:
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/yourusername/fruit-retail-homepage.git
+    cd fruit-retail-homepage
+    ```
+
+2. Install dependencies:
+    ```bash
+    npm install
+    ```
+
+3. Run the development server:
+    ```bash
+    npm run dev
+    ```
+## Version
+
+Current release: **v1.0.0** (First stable build)
+
+- **v1.0.0**: Initial release with basic setup, product details, cart, and home page.
+
+You can check out previous releases and the changelog on [GitHub Releases](https://github.com/NT-Van-Khanh/fruit-sale-app-frontend/releases).
+
+## Changelog
+
+### v1.0.0
+- Initial release with React, Vite, Tailwind CSS setup.
+- Pages for home, product details, and cart.
+- Integrated API for dynamic data fetching.
+
