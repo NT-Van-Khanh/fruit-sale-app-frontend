@@ -32,7 +32,6 @@ To get started with this project, follow the steps below:
 1. Clone the repository:
     ```bash
     git clone https://github.com/NT-Van-Khanh/fruit-sale-app-frontend.git
-    cd home-page
     ```
 
 2. Install dependencies:
