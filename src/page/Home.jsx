@@ -6,7 +6,7 @@ import Categories  from "../component/Categories";
 import FeaturedProducts  from "../component/FeaturedProducts";
 import ProductGrid  from "../component/ProductGrid";
 import Swal from "sweetalert2";
-import { fetchProducts, fetchFeaturedProducts } from "../service/api"; // API call
+import { fetchProducts, fetchFeaturedProducts, fetchCheckStock } from "../service/api"; // API call
 const HomePage = () =>{
     const [products, setProducts] = useState([]);
     const [featuredProducts,setFeaturedProducts] = useState([]);
@@ -15,8 +15,8 @@ const HomePage = () =>{
         const loadProducts = async () => {
             try {
                 const [allProducts, featured] = await Promise.all([
-                    fetchProducts(), // Gọi API 1
-                    fetchFeaturedProducts() // Gọi API 2
+                    fetchProducts(), // Call API get all product
+                    fetchFeaturedProducts() //Call API get featured products
                 ]);
 
                 setProducts(allProducts);
@@ -32,32 +32,52 @@ const HomePage = () =>{
     },[]);
 
 
-    const handleAddToCart = (product) => {
-        // Lấy danh sách giỏ hàng hiện tại từ LocalStorage (nếu có)
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-        // Kiểm tra nếu sản phẩm đã có trong giỏ hàng, thì tăng số lượng
-        const existingProductIndex = cart.findIndex((item) => item.productId === product.id);
-
-        if (existingProductIndex !== -1) {
-            cart[existingProductIndex].quantity += 1;
-        } else {
-            cart.push({ productId: product.id, quantity: 1 });
+    const handleAddToCart = async (product) => {
+        try{
+            const maxQuantity = await fetchCheckStock(product.id);
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const existingProduct = cart.findIndex((item) => item.productId === product.id);
+            const maxAvailbleQuantity =  (existingProduct!== -1) ? maxQuantity - cart[existingProduct].quantity : maxQuantity;
+           
+            if(maxAvailbleQuantity <= 0){
+                Swal.fire({
+                    icon: "warning",
+                    title: "Không thể thêm sản phẩm!",
+                    text: `Số lượng sản phẩm trong giỏ hàng đã tối đa.`,
+                    position: "bottom-end",
+                    toast: true,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                });
+                return; 
+            }
+            if (existingProduct !== -1) {
+                cart[existingProduct].quantity += 1;
+            } else {
+                cart.push({ productId: product.id, quantity: 1 });
+            }
+            // Lưu lại giỏ hàng mới vào LocalStorage
+            localStorage.setItem("cart", JSON.stringify(cart));
+            Swal.fire({
+                title: "Thành công!",
+                text: "Sản phẩm đã được thêm vào giỏ hàng.",
+                icon: "success",
+                toast: true,
+                position: "bottom-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+            console.log("Đã thêm vào giỏ:", product);
+        }catch (error) {
+            console.error("Lỗi khi kiểm tra tồn kho:", error);
+            Swal.fire({
+                icon: "warning",
+                title: "Lỗi khi kiểm tra tồn kho!",
+                text: `Lỗi khi kiểm tra tồn kho, vui lòng thử lại.`,
+            });
         }
-
-        // Lưu lại giỏ hàng mới vào LocalStorage
-        localStorage.setItem("cart", JSON.stringify(cart));
-        Swal.fire({
-            title: "Thành công!",
-            text: "Sản phẩm đã được thêm vào giỏ hàng.",
-            icon: "success",
-            toast: true,
-            position: "bottom-end",
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-        });
-        console.log("Đã thêm vào giỏ:", product);
     };
 
     return (
@@ -76,16 +96,13 @@ const HomePage = () =>{
                     </div>
                     {/* Sản phẩm nổi bật */}
                     <section className="featured-products-section">
-                        {/* <h2>Sản phẩm nổi bật</h2> */}
                         <FeaturedProducts products={featuredProducts} onAddToCart={handleAddToCart} />
                     </section>
 
                     {/* Sản phẩm dạng lưới */}
                     <section className="product-grid-section">
-                        {/* <h2>Sản phẩm mới nhất</h2> */}
                         <ProductGrid products={products} onAddToCart={handleAddToCart}/>
                     </section>  
-                    {/* Danh sách sản phẩm với nút "Xem thêm" */}
                 </div>
             </main>
             <Footer />

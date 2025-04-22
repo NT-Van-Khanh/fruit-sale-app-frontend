@@ -5,8 +5,8 @@ const Header = () => {
     return (
         <header className="fixed top-0 left-0 w-full z-50 
                         bg-green-500 px-4 py-2 text-white 
-                        flex justify-between items-center shadow-md">
-            <h1 className="text-[42px] font-bold"><a href="/">FruitShop</a></h1>
+                        flex justify-between items-center shadow-md  box-border">
+            <h1 className="md:text-[42px] text-[28px] font-bold whitespace-nowrap overflow-hidden"><a href="/">FruitShop</a></h1>
             <SearchBar/>
             <div className="flex gap-4">
                 <Link to="/cart" className="text-white hover:text-gray-500">

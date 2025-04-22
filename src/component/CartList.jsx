@@ -4,8 +4,10 @@ import CartItem from "./CartItem";
 const CartList = ({cart,onSelect, selectedItems,onSelectAll, isAllSelected,  products, onIncrease, onDecrease, onRemove }) => {
 
     return (
-        // text-gray-600
-        <div className="cart-list w-4/6 m-2 p-5 shadow-lg rounded-lg bg-white">
+        // 
+        <div className="cart-list m-2 p-5 shadow-lg rounded-lg bg-white text-gray-700
+        md:w-4/6 w-full  box-border">
+            {/* w-full sm:w-5/6 md: lg:w-4/6 xl:w-4/6"> */}
             <div className="flex items-center justify-between gap-4 py-3 pl-5 pr-10  ">
                 <div>
                     <input type="checkbox" className="w-5 h-5"  

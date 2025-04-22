@@ -12,8 +12,8 @@ const ProductCard = ({product, onAddToCart}) =>{
             onClick={handleClick}>
 
             <img src={product.image} alt={product.name} className="w-full h-40 object-cover rounded-md" />
-            <h3 className="text-sm font-semibold mt-2">{product.name}</h3>
-            <p className="text-red-500 font-bold">{product.price.toLocaleString()} VND/{product.unit}</p>
+            <h3 className=" font-semibold mt-2 text-gray-800">{product.name}</h3>
+            <p className="text-sm text-orange-600 font-bold">{product.price.toLocaleString()} VND/{product.unit}</p>
             <button className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md 
                         hover:bg-green-600 w-9/10" 
                         onClick={(e) => {

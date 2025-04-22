@@ -1,30 +1,6 @@
-import React,  {useEffect, useState} from "react";
-
-const ProductDetail = ({ productId, onAddToCart })=>{
-    const [product, setProduct] = useState(null);
+import React,  {useState} from "react";
+const ProductDetailInfo = ({ product, onAddToCart,handleInputChange, handleIncrease})=>{
     const [quantity, setQuantity] = useState(1);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const response = await fetch(`http://localhost:8088/api/product/${productId}`);
-                if (!response.ok) throw new Error("Không thể lấy dữ liệu sản phẩm");
-                const data = await response.json();
-                setProduct(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProduct();
-    }, [productId]);
-
-    if (loading) return <p>Đang tải sản phẩm...</p>;
-    if (error) return <p>Lỗi: {error}</p>;
-    if (!product) return <p>Không tìm thấy sản phẩm.</p>;
 
     return (
         <div className="flex flex-col w-[90%] max-w-4xl p-6 rounded-xl shadow-lg bg-white mx-auto">
@@ -43,19 +19,24 @@ const ProductDetail = ({ productId, onAddToCart })=>{
                     <div className="flex items-center mt-4">
                         <label className="text-lg text-gray-600 mr-2">Thêm vào giỏ:</label>
                         <button
-                            className="px-3 py-[2px] border rounded bg-gray-200"
+                            className="px-3 py-[2px] text-[18px]  text-centerr bg-gray-200
+                            rounded-tl-lg rounded-bl-lg"
                             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                         >-</button>
-                        <span className="px-4">{quantity}</span>
+                        <input value={quantity} min ="1" type="number"
+                            onChange = {(e)=> handleInputChange(e, setQuantity)}
+                            className="px-4 py-[1.5px] min-w-[24px] max-w-[150px] border border-gray-200 
+                                    text-center text-lg font-medium text-gray-600 "/>
                         <button
-                            className="px-3 py-[2px] border rounded bg-gray-200"
-                            onClick={() => setQuantity((q) => q + 1)}
+                            className="px-3  py-[2px]  text-[18px]  text-center bg-gray-200
+                            rounded-tr-lg rounded-br-lg"
+                            onClick={() => handleIncrease(quantity, setQuantity)}
                         >+</button>
                     </div>
                     <button
                         className="mt-4 px-4 py-2 bg-green-500 hover:bg-green-400
                                     text-white rounded"
-                        onClick={() => onAddToCart(product, quantity)}>
+                        onClick={() => onAddToCart(product, quantity, setQuantity)}>
                         Thêm vào giỏ hàng
                     </button>
                 </div>
@@ -69,4 +50,4 @@ const ProductDetail = ({ productId, onAddToCart })=>{
 };
 
 
-export default ProductDetail;
+export default ProductDetailInfo;

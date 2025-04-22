@@ -4,6 +4,8 @@ import Footer from "../component/Footer";
 import CartList from "../component/CartList";
 import CartSummary from "../component/CartSummary";
 import Swal from "sweetalert2";
+
+import {fetchProductSimpleInfo, fetchCheckStock} from "../service/api.js";
 const CartPage = () => {
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
@@ -31,16 +33,14 @@ const CartPage = () => {
         const fetchProducts = async () => {
             try {
                 const responses = await Promise.all(
-                    cart.map(({ productId }) => fetch(`http://localhost:8088/api/product/simple/${productId}`))
+                    cart.map(({ productId }) => fetchProductSimpleInfo(productId))
                 );
-
-                const productData = await Promise.all(
-                    responses.map(async (res, index) => {
-                        if (!res.ok) throw new Error(`Lỗi API với ID ${cart[index].productId}`);
-                        const product = await res.json();
-                        return { ...product, quantity: cart[index].quantity };
-                    })
-                );
+                const productData = responses.map((product, index) => {
+                    if (!product) {
+                        throw new Error(`Lỗi lấy dữ liệu từ API với ID: ${cart[index].productId}`);
+                    }
+                    return { ...product, quantity: cart[index].quantity };
+                });
                 setProducts(productData);
             } catch (error) {
                 console.error("Lỗi khi tải sản phẩm", error);
@@ -51,21 +51,13 @@ const CartPage = () => {
 
     const checkStock = async (productId) => {
         try {
-            const response = await fetch(`http://localhost:8088/api/product/check-stock/${productId}`);
+            const maxQuantity = await fetchCheckStock(productId);
             
-            if (!response.ok) {
-                const text = await response.text(); // Lấy toàn bộ phản hồi
-                console.error("Lỗi từ server:", text);
-                return 0; // Trả về 0 nếu API có lỗi
-            }
-
-            const data = await response.json();
-            console.log("Dữ liệu tồn kho nhận được:", data); // Log để kiểm tra
-            
-            if (typeof data === "number") {
-                return data; // Nếu API trả về số, thì đây là số lượng tồn kho
+            console.log("Dữ liệu tồn kho nhận được:", maxQuantity ); // Log để kiểm tra
+            if (typeof maxQuantity  === "number") {
+                return maxQuantity ; // Nếu API trả về số, thì đây là số lượng tồn kho
             } else {
-                console.error("Phản hồi API không hợp lệ:", data);
+                console.error("Phản hồi API không hợp lệ:", maxQuantity );
                 return 0;
             }
         } catch (error) {
@@ -76,6 +68,21 @@ const CartPage = () => {
 
     const increaseQuantity = async (productId) => {
         const stock = await checkStock(productId);
+        const productInCart = cart.find(item => item.productId === productId);
+        if (!productInCart) return;
+
+        if (productInCart.quantity >= stock) {
+            Swal.fire({
+                icon: "warning",
+                title: "Vượt quá tồn kho!",
+                text: `Chỉ còn ${stock} sản phẩm trong kho.`,
+                position: "bottom-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+            return;
+        }
 
         const updatedCart = cart.map((item) =>
             item.productId === productId && item.quantity < stock
@@ -98,7 +105,6 @@ const CartPage = () => {
             );
             updatedCart = updatedCart.filter((item) => item.quantity > 0);
     
-            // Cập nhật LocalStorage
             localStorage.setItem("cart", JSON.stringify(updatedCart));
             return updatedCart;
         });
@@ -154,7 +160,7 @@ const CartPage = () => {
         const product = products.find(p => p.id === item.productId);
         return product ? sum + product.price * item.quantity : sum;
     }, 0);
-    const discount = total * 0.0; // Ví dụ giảm 10% total*0.1
+    const discount = total * 0.0; // Ví dụ: giảm 10% -> total*0.1
     
     const toggleSelectAll = () => {
         if (selectedItems.size === cart.length) {
@@ -164,21 +170,27 @@ const CartPage = () => {
         }
     };
     
-    // const isAllSelected = selectedItems.size === cart.length && cart.length > 0;
-
-
     // Thanh toán
-    const handleCheckout = () => {
+    const handleCheckout = async() => {
+        for (const item of cart) {
+            const maxQuantity = await fetchCheckStock(item.productId);
+            if (item.quantity <= 0 || item.quantity > maxQuantity) {
+                alert("Số lượng sản phẩm vượt tồn kho, vui lòng kiểm tra lại.");
+                return; // dừng lại nếu có lỗi
+            }
+        }
+
         alert("Chuyển đến trang thanh toán!");
     };
 
 
     return (
-        <div className="min-h-screen flex flex-col" >
-            <Header />
-            <main className="px-2 pt-3 pb-5 flex justify-between bg-gray-100"> 
+        <div className="min-h-screen flex flex-col box-border w-full" >
+            <Header/>
+            <main className="pt-3 pb-5  bg-gray-100 
+                    flex flex-col md:flex-row justify-around w-full box-border"> 
                 {/* <Cart products = {products}/> */}
-                    <CartList
+                    <CartList 
                         cart = {cart}
                         products = {products}
                         
