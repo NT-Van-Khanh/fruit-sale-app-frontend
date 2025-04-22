@@ -45,13 +45,18 @@ To get started with this project, follow the steps below:
     ```
 ## Version
 
-Current release: **v1.0.0** (First stable build)
+Current release: **v1.1.0**
 
 - **v1.0.0**: Initial release with basic setup, product details, cart, and home page.
+- **v1.1.0**: Refactor of API calls to `api.js` components and pages. Added error handling and notifications for invalid quantity input on Home, Cart, and Product Detail pages.
 
 You can check out previous releases and the changelog on [GitHub Releases](https://github.com/NT-Van-Khanh/fruit-sale-app-frontend/releases).
 
 ## Changelog
+### v1.1.0
+- **Refactor**: Moved API calls to `api.js` for better organization of components and pages.
+- **New Feature**: Added error handling and notifications when the user enters or adjusts an invalid quantity in the Home, Cart, and Product Detail pages.
+- Notifications are shown for invalid quantities, including when the user tries to exceed the available stock.
 
 ### v1.0.0
 - Initial release with React, Vite, Tailwind CSS setup.
