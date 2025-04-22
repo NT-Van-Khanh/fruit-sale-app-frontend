@@ -179,8 +179,7 @@ const CartPage = () => {
                 return; // dừng lại nếu có lỗi
             }
         }
-
-        alert("Chuyển đến trang thanh toán!");
+        window.location.href = '/payment';
     };
 
 
