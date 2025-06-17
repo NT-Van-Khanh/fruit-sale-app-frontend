@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react";
-import Header  from "../component/Header";
+import { useNavigate } from 'react-router-dom';
+import Header  from "../component/header/Header";
 import Footer from "../component/Footer";
-import CartList from "../component/CartList";
-import CartSummary from "../component/CartSummary";
+import CartList from "../component/cart/CartList";
+import CartSummary from "../component/cart/CartSummary";
 import Swal from "sweetalert2";
 
-import {fetchProductSimpleInfo, fetchCheckStock} from "../service/api.js";
+import {fetchProductSimpleInfo, fetchCheckStock} from "../service/productApi.js";
 const CartPage = () => {
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
@@ -169,17 +170,42 @@ const CartPage = () => {
             setSelectedItems(new Set(cart.map((item) => item.productId))); // Chọn tất cả
         }
     };
-    
+
+    const navigate = useNavigate();
     // Thanh toán
     const handleCheckout = async() => {
+        const selectedCartItems = cart.filter(item => selectedItems.has(item.productId));
+         if (selectedCartItems.length === 0) {
+            Swal.fire({
+                    title: "Thông báo!",
+                    text: "Vui lòng chọn ít nhất một sản phẩm.",
+                    icon: "warning",
+                    toast: true,
+                    position: "bottom-end",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                });
+            return;
+        }
+
         for (const item of cart) {
             const maxQuantity = await fetchCheckStock(item.productId);
             if (item.quantity <= 0 || item.quantity > maxQuantity) {
-                alert("Số lượng sản phẩm vượt tồn kho, vui lòng kiểm tra lại.");
-                return; // dừng lại nếu có lỗi
+                 Swal.fire({
+                    title: "Thông báo!",
+                    text: "Số lượng sản phẩm vượt tồn kho, vui lòng thử lại.",
+                    icon: "warning",
+                    toast: true,
+                    position: "bottom-end",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    });
+                return;
             }
         }
-        window.location.href = '/payment';
+        navigate('/payment', { state: { selectedCartItems } });
     };
 
 

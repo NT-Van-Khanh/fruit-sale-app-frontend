@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
-import Header  from "../component/Header";
+import Header  from "../component/header/Header";
 import Footer from "../component/Footer";
 import Banner from "../component/Banner";
 import Categories  from "../component/Categories";
-import FeaturedProducts  from "../component/FeaturedProducts";
-import ProductGrid  from "../component/ProductGrid";
+import FeaturedProducts  from "../component/product/FeaturedProducts";
+import ProductGrid  from "../component/product/ProductGrid";
 import Swal from "sweetalert2";
-import { fetchProducts, fetchFeaturedProducts, fetchCheckStock } from "../service/api"; // API call
+import { fetchProducts, fetchFeaturedProducts, fetchCheckStock } from "../service/productApi"; // API call
 const HomePage = () =>{
     const [products, setProducts] = useState([]);
     const [featuredProducts,setFeaturedProducts] = useState([]);
@@ -101,6 +101,7 @@ const HomePage = () =>{
 
                     {/* Sản phẩm dạng lưới */}
                     <section className="product-grid-section">
+                        <h2 className="text-gray-600 text-[23px] text-left font-bold pl-9 mt-2 mb-4">Tất cả sản phẩm</h2>
                         <ProductGrid products={products} onAddToCart={handleAddToCart}/>
                     </section>  
                 </div>

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
-import Header  from "../component/Header";
+import Header  from "../component/header/Header";
 import Footer from "../component/Footer";
-import ProductDetailInfo from "../component/ProductDetailInfo";
+import ProductDetailInfo from "../component/product/ProductDetailInfo";
 import Swal from "sweetalert2";
 
-import {fetchProductDetailById, fetchCheckStock} from "../service/api";
+import {fetchProductDetailById, fetchCheckStock} from "../service/productApi";
 const ProductDetailPage = () => {
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);

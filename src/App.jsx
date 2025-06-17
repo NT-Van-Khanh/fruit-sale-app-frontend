@@ -4,18 +4,22 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from './page/Home';
-import CartPage from './page/Cart';
-import PaymentPage from './page/Payment'; 
-import ProductDetailPage from './page/ProductDetail';
+import HomePage from './page/HomePage';
+import SearchPage from './page/SearchPage';
+import CartPage from './page/CartPage';
+import PaymentPage from './page/PaymentPage'; 
+import ProductDetailPage from './page/ProductDetailPage';
+import OrderDetailPage from './page/OrderDetailPage';
 function App(){
   return (
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path='/search' element={<SearchPage />} />
         <Route path='/cart' element={<CartPage/>} />
         <Route path='/product/:productId' element={<ProductDetailPage/>} />
         <Route path='/payment' element={<PaymentPage />} />
+        <Route path='/order-detail' element={<OrderDetailPage />} />
         {/* <Route path='/login' element={<LoginPage/>} /> */}
       </Routes>
     </Router>
