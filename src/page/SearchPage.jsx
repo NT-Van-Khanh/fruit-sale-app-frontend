@@ -16,7 +16,10 @@ const SearchPage = () => {
         const params = new URLSearchParams(location.search);
         return params.get("keyword") || "";
     }, [location.search]);
-
+    const categoryId = useMemo(() => {
+        const params = new URLSearchParams(location.search);
+        return params.get("categoryId") || "";
+    }, [location.search]);
     const [searchProducts, setSearchProducts] = useState ([]);
     const [hasMore, setHasMore] = useState(true);
     const pageRef = useRef(0);
@@ -48,7 +51,7 @@ const SearchPage = () => {
             };
 
             const dataResponse = await fetchSearchProducts(
-                keyword,
+                keyword || null,
                 filters.category || null,
                 filters.brand || null,
                 filters.minPrice ?? null,
@@ -80,8 +83,8 @@ const SearchPage = () => {
     
         setSearchProducts([]);
         setHasMore(true);
-        if (keyword) {
-            fetchProducts(pageRef.current, true);
+        if (keyword || categoryId) {
+                fetchProducts(pageRef.current, true);
         }
     }, [keyword]);
 
